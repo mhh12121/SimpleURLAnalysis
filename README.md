@@ -1,18 +1,27 @@
-### A simple URL Analysis tools
-#### Description: to filter Nginx access log 
-    ( but in such format:  ```<URL>, <Response Time>, <Response Status>``` )
+## A simple URL Analysis tools
 
-#### Filter out given quantity n of slowest response time URL
-#### Requirement: 
+### Description: 
+    Filter out given quantity n of slowest response time URL
+    ( In such format:  ```<URL>, <Response Time>, <Response Status>``` )
+
+
+### Requirement: 
 1. Only considering ```GET``` method and status with ```200``` URL
 2. Ignore URL ending with ```".gif"```
 3. Result should be decreasing
 4. Assuming that Every Request strictly follows the rules:
-``` 
-    <URL>({GET/POST/PUT/DELETE} [url])//and url should begin with "/"
-    <Response Time>(minimum 0.001s, no space allowed between number and unit)
-    <Response Status>(only have one number)
-```
+    - **<URL>** : ```({GET/POST/PUT/DELETE} [url])//and url should begin with "/"```
+    - **<Response Time>**: ```(minimum 0.001s, no space allowed between number and unit)```
+    - **<Response Status>**: ```(only have one number)```
+
+
+### Environment
+- Ubuntu 16.04
+- Go 1.11
+
+
 ### Procedure to run
 type following in your CLI:
 ```go run main.go```
+
+
