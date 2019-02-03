@@ -1,0 +1,21 @@
+/abc.com,0.31s,Status Code:200
+/abc.com,0.33s,Status Code:200
+/abc.com2.com,0.54s,Status Code:200
+http://abc.com2,1.31s,Status Code:4001
+http://abc.com3,0.91s,Status Code:200
+/abc.com4,0.51s,Status Code:200
+/abc.com4,0.41s,Status Code:200
+/abc.com4,0.31s,Status Code:200
+/abc.com5,0.45s,Status Code:200
+http://abc.com5,0.31s,Status Code:200
+http://abc.com6,0.31s,Status Code:200
+http://abc.com6,2.33s,Status Code:200
+http://abc.gif,0.31s,Status Code:200
+http://abc.com7,5.31s,Status Code:200
+http://abc.com7,5.31 s,Status Code:200
+http://abc.com8,9.31 s,Status Code:200
+http://abc.com7,10.31 s,Status Code:200
+http://abc.com10,2.31 s,Status Code:200
+http://abc.com11.gif,5.31s,Status Code:401
+http://abc.com12,5.31s,StatusCode:200
+http://abc.com12,5.31s,StatusCode:403
