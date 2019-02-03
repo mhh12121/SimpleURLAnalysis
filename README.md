@@ -21,7 +21,9 @@
 
 
 ### 4. Procedure to run
-type following in your CLI:
-```go run main.go```
++ Simply type following in your CLI:
+    ```go run main.go```
++ Test with log file ```access.log```
++ Can modify path/filename and required quantity in ```run.conf```
 
 
