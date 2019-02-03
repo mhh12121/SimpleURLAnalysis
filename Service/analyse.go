@@ -11,12 +11,13 @@ import (
 	"strings"
 )
 
-type UrlData struct {
-	Url        string
+//URLData is for saving every distinct url avgResponse time struct
+type URLData struct {
+	URL        string
 	AvgResTime int
 	Quantity   int
 }
-type urlDataArr []UrlData
+type urlDataArr []URLData
 
 func (s urlDataArr) Len() int {
 	return len(s)
@@ -36,35 +37,34 @@ func Analyze_requests(path string, returnSize int) []string {
 	if statErr != nil {
 		panic(statErr)
 	}
-
 	defer f.Close()
-
 	rd := bufio.NewReaderSize(f, int(size.Size()>>2))
-	urlmap := make(map[string]UrlData)
+	urlmap := make(map[string]URLData)
 	var urlData urlDataArr
 
-	// tmpurl := make([]UrlData, 0)
-	// sort.Ints(res)
-	line := 0 //to check which line
+	line := 0 //to track which line occur problems
 	for {
 		line++
-		lineData, _, err := rd.ReadLine()
-
+		lineData, err := rd.ReadString('\n')
 		if err != nil || err == io.EOF {
 			fmt.Println(err)
 			break
 		}
-		fmt.Println(string(lineData))
+		//skip \r and \n
+		lineData = strings.TrimSpace(lineData)
+		if len(lineData) == 0 {
+			fmt.Printf("skip this this line: %d", line)
+			continue
+		}
 		s := strings.Split(string(lineData), ",")
-		// fmt.Println(s)
 		if len(s) != 3 {
-			fmt.Println("err format problem:%v on line %d", s, line)
+			fmt.Printf("err format problem:%v on line %d", s, line)
 			break
 		}
 
 		//filter URL ending with .gif and with another method
 		skip, url := filterURL(s[0])
-		// fmt.Println("url", url)
+
 		if skip {
 			continue
 		}
@@ -73,16 +73,14 @@ func Analyze_requests(path string, returnSize int) []string {
 		if !ok {
 			continue
 		}
-		//trim response time
-		data, _ := strconv.ParseFloat(strings.TrimSuffix(s[1], "s"), 32)
-		resTime := int(data * 1000)
+		//filter response time
+		resTime := filterResTime(s[1])
 		urlExists, ok := urlmap[url]
 		if !ok { //new one
-			var tmp UrlData
-			tmp.Url = url
+			var tmp URLData
+			tmp.URL = url
 			tmp.AvgResTime = resTime
 			tmp.Quantity = 1
-
 			urlmap[url] = tmp
 
 		} else { //existing
@@ -107,7 +105,7 @@ func Analyze_requests(path string, returnSize int) []string {
 	}
 	res := make([]string, returnSize)
 	for i := 0; i < returnSize; i++ {
-		res[i] = urlData[i].Url
+		res[i] = urlData[i].URL
 	}
 
 	return res
@@ -115,11 +113,30 @@ func Analyze_requests(path string, returnSize int) []string {
 
 func filterURL(s string) (bool, string) {
 	allowSuffix := ".gif"
-	allowMethod := "get"
+	allowMethod := "get" //here assume that begin with "/" or "get" is GET method Request
 	url := strings.ToLower(s)
+	fmt.Println("1", url)
+	url = strings.TrimSpace(strings.TrimPrefix(url, allowMethod)) //TrimSpace doesn't consider buffer with 0
+	fmt.Println("2", url)
+	skip := false
+	if !strings.HasPrefix(url, "/") { //another method
+		// url = subString(s, '/')
+		skip = true
+	}
 
-	return strings.HasSuffix(url, allowSuffix) || !strings.HasPrefix(url, allowMethod), url
+	return strings.HasSuffix(url, allowSuffix) || skip, url
 }
+
+// no need to record another method
+// func subString(s string, firstByte byte) string {
+// 	pos := strings.IndexByte(s, firstByte)
+// 	res := make([]byte, 0)
+// 	if pos >= 0 {
+// 		res = []byte(s)[pos:len(s)]
+// 	}
+
+// 	return string(res)
+// }
 func filterStatus(status string) bool {
 
 	statusReg := regexp.MustCompile(`[0-9]+`)
@@ -130,4 +147,11 @@ func filterStatus(status string) bool {
 		return false
 	}
 	return true
+}
+
+func filterResTime(time string) int {
+	time1 := strings.TrimSpace(time)
+	data, _ := strconv.ParseFloat(strings.TrimSuffix(time1, "s"), 32)
+	resTime := int(data * 1000)
+	return resTime
 }
