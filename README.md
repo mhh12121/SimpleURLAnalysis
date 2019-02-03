@@ -7,3 +7,8 @@
 1. Only considering ```GET``` method and status with ```200``` URL
 2. Ignore URL ending with ```".gif"```
 3. Result should be decreasing
+
+
+### Procedure to run
+type following in your CLI:
+```go run main.go```
